@@ -1,0 +1,13 @@
+@echo off
+echo [1/3] Killing all existing Node.exe processes to clear zombies...
+taskkill /F /IM node.exe /T
+
+echo.
+echo [2/3] Cleaning up backend dependencies...
+cd backend
+echo Checking local modules...
+
+echo.
+echo [3/3] Starting Backend Server on Port 5005...
+node server.js
+pause

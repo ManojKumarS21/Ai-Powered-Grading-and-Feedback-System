@@ -66,6 +66,10 @@ wss.on("connection", (ws) => {
 
 // Start server
 const PORT = process.env.PORT || 5002;
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server successfully started on port ${PORT} (Pure WebSockets)`);
-});
+if (require.main === module) {
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server successfully started on port ${PORT} (Pure WebSockets)`);
+  });
+}
+
+module.exports = app;

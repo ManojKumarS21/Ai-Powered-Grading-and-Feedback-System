@@ -16,6 +16,11 @@ interface EvaluationResult {
   improvements: string[];
 }
 
+/* ================= ENV ================= */
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
+
+
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -28,7 +33,7 @@ export default function Home() {
   // Custom Challenge State
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [newDesc, setNewDesc] = useState(""); 
+  const [newDesc, setNewDesc] = useState("");
   const [newMaxMarks, setNewMaxMarks] = useState(10);
   const [isCreating, setIsCreating] = useState(false);
   const [isEditingTask, setIsEditingTask] = useState(false);
@@ -47,8 +52,8 @@ export default function Home() {
     fetchTasks();
 
     // Initialize WebSocket
-    console.log("Connecting to  WebSocket on 127.0.0.1:5005...");
-    const ws = new WebSocket("ws://127.0.0.1:5005");
+    console.log(`Connecting to WebSocket on ${WS_URL}...`);
+    const ws = new WebSocket(WS_URL || "ws://127.0.0.1:5005");
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -95,7 +100,7 @@ export default function Home() {
 
   async function fetchTasks() {
     try {
-      const res = await fetch("http://127.0.0.1:5005/api/tasks");
+      const res = await fetch(`${API_URL}/api/tasks`);
       if (!res.ok) throw new Error("Failed to fetch tasks");
       const data = await res.json();
       setTasks(data);
@@ -115,8 +120,8 @@ export default function Home() {
     setError(null);
     try {
       const url = isEditingTask
-        ? `http://127.0.0.1:5005/api/update-task/${selectedTask?.id}`
-        : "http://127.0.0.1:5005/api/add-task";
+        ? `${API_URL}/api/update-task/${selectedTask?.id}`
+        : `${API_URL}/api/add-task`;
 
       const method = isEditingTask ? "PUT" : "POST";
 
@@ -180,7 +185,7 @@ export default function Home() {
     setError(null);
 
     try {
-      const response = await fetch("http://127.0.0.1:5005/api/submit-code", {
+      const response = await fetch(`${API_URL}/api/submit-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
